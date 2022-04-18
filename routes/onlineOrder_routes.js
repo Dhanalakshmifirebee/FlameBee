@@ -6,10 +6,10 @@ router.post('/createOnlineOrderDetails',orderOnlineControllDetails.onlineOrderDe
 router.get('/getAllOnlineOrderDetails',orderOnlineControllDetails.getAllOnlineOrderDetails)
 router.get('/getSingleOnlineOrderDetails/:id',orderOnlineControllDetails.getSingleOnlineOrderDetails)
 
-router.put('/adminUpdateOnlineOrderDetails/:deliveryCandidateId/:orderId',orderOnlineControllDetails.adminUpdateOnlineOrderDetails)
+router.put('/adminUpdateOnlineOrderDetails',orderOnlineControllDetails.adminUpdateOnlineOrderDetails)
 router.get('/getAllOnlineOrderAcceptedDetails',orderOnlineControllDetails.getAllOnlineOrderAcceptedDetails)
 
-router.put('/deliveryCandidateUpdateOnlineOrderStatusDetails/:deliveryCandidateId/:orderId',orderOnlineControllDetails.deliveryCandidateUpdateOnlineOrderStatusDetails)
+router.put('/deliveryCandidateUpdateOnlineOrderStatusDetails',orderOnlineControllDetails.deliveryCandidateUpdateOnlineOrderStatusDetails)
 router.put('/deliveryCandidateUpdateOnlineOrderDetails/:deliveryCandidateId/:orderId',orderOnlineControllDetails.deliveryCandidateUpdateOnlineOrderDetails)
 
 module.exports=router

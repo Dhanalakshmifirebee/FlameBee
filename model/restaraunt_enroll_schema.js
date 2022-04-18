@@ -57,6 +57,7 @@ const avaliableFoodSchema = mongoose.Schema({
     category:String,
     cuisine:String,
     rating:String,
+    restaurantId:String,
     amount: {
         type: Number,
         default: 1

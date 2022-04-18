@@ -21,13 +21,14 @@ const image = (req,res)=>{
 
 const createRestarauntBySuper = (req, res) => {
     try{
-        console.log("line 11",req.body.email)
+        console.log("line 11",req.body)
             restarauntSchema.addRestrauntByOwner.countDocuments({ email: req.body.email }, (err, data) => {
                 console.log("line 12",data)
                 if (data == 0) {
                     const token = jwt.decode(req.headers.authorization)
                     console.log(token)
-                    const id = token.userId
+                    const id = token.userid
+                    console.log(id)
                     console.log("14",id)
                     req.body.userId = id
                     // console.log(req.files)
@@ -53,7 +54,7 @@ const createRestarauntBySuper = (req, res) => {
 const getRestarauntByOwner = (req, res) => {
     try {
         const token = jwt.decode(req.headers.authorization)
-        const verifyId = token.userId
+        const verifyId = token.userid
         restarauntSchema.addRestrauntByOwner.find({ userId: verifyId, deleteFlag: "false" }, (err, data) => {
             if (err) {
                 console.log('data does not exists')
@@ -170,7 +171,7 @@ const updateRestarauntByOwner = (req, res) => {
             }
         })
     } catch (err) {
-        res.status(500).send({ message: 'internal server error' })
+        res.status(500).send({message: 'internal server error'})
     }
 }
 
@@ -184,93 +185,110 @@ const deleteRestarauntByOwner = (req, res) => {
                 res.status(200).send({ message: 'data deleted successfully' })
             }
         })
-    } catch (e) {
+    }catch (e) {
         res.status(500).send({ message: e.message })
     }
 }
 
 const avaliableItems = async (req, res) => {
     try{
-    console.log(req.body.restaurantId)
-    const z = await restarauntSchema.addRestrauntByOwner.findById(req.body.restaurantId)
-    console.log('z', z)
-    req.body.restaurantDetails = z
-    console.log("line155",req.file)
-    req.body.foodImage = `http://192.168.0.112:8612/uploads/${req.file.filename}`
-    console.log(req.file)
-    restarauntSchema.addAvaliableFood.create(req.body, (err, data) => {
-        if (err) { console.log(err) }
-        else {
-            console.log(data)
-            res.status(200).send({ message: data, statusCode: 200 })
-        }
-    })
-}catch(err){res.status(500).send({message:err.message})}
+        console.log(req.body.restaurantId)
+        const z = await restarauntSchema.addRestrauntByOwner.findById(req.body.restaurantId)
+        console.log('z', z)
+        req.body.restaurantDetails = z
+        // console.log("line155",req.file)
+        // req.body.foodImage = `http://192.168.0.112:8612/uploads/${req.file.filename}`
+        // console.log(req.file)
+        restarauntSchema.addAvaliableFood.create(req.body, (err, data) => {
+            if (err) { console.log(err) }
+            else {
+                console.log(data)
+                res.status(200).send({ message: data, statusCode: 200 })
+            }
+        })
+    }
+    catch(err){
+        res.status(500).send({message:err.message})
+    }
 }
 
 const getFoodItemsByOwner = (req, res) => {
     try{
         restarauntSchema.addAvaliableFood.find({ restaurantId: req.params.restaurantId, deleteFlag: 'false' }, (err, data) => {
-        console.log(data)
-        if (err) {
-             res.status(400).send({ message: 'invalid restarauntid' }) }
-        else {
-            var count=data.length
-            console.log(count)
-            const datas=paginated.paginated(data,req,res)
-            console.log(datas)
-            res.status(200).send({ message: datas,count})
-        }
-    })
+            console.log(data)
+            if (err) {
+                res.status(400).send({ message: 'invalid restarauntid' }) }
+            else {
+                var count=data.length
+                console.log(count)
+                const datas=paginated.paginated(data,req,res)
+                console.log(datas)
+                res.status(200).send({ message: datas,count})
+            }
+        })
     }catch(err){
-    res.status(500).send({message:err.message})
+        res.status(500).send({message:err.message})
     }
 }
 
 const getByFoodId = (req, res) => {
     try{
-    restarauntSchema.addAvaliableFood.findById({ _id: req.params.id, deleteFlag: 'false' }, (err, data) => {
-        if (err) { res.status(400).send({ message: 'invalid id' }) }
-        else {
-            console.log(data)
-            res.status(200).send({ message: data })
-        }
-    })
-}catch(err){res.status(500).send({message:err.message})}
+        restarauntSchema.addAvaliableFood.findById({ _id: req.params.id, deleteFlag: 'false' }, (err, data) => {
+            if (err) { res.status(400).send({ message: 'invalid id' }) }
+            else {
+                console.log(data)
+                res.status(200).send({ message: data })
+            }
+        })
+    }
+    catch(err){
+        res.status(500).send({message:err.message})
+    }
 }
 
 const getAllFood = (req, res) => {
     try{
-    restarauntSchema.addAvaliableFood.find({ deleteFlag: 'false' }, (err, data) => {
-        if (err) { res.status(400).send({ message: 'invalid id' }) }
-        else {
-            // const datas=paginated.paginated(data,req,res)
-            // console.log(datas)
-            res.status(200).send({ message: data})
-        }
-    })
-}catch(err){res.status(500).send({message:err.message})}
+        restarauntSchema.addAvaliableFood.find({ deleteFlag: 'false' }, (err, data) => {
+            if (err) { res.status(400).send({ message: 'invalid id' }) }
+            else {
+                // const datas=paginated.paginated(data,req,res)
+                // console.log(datas)
+                res.status(200).send({ message: data})
+            }
+        })
+    }
+    catch(err){
+        res.status(500).send({message:err.message})
+    }
 }
 
 const updateFood = (req, res) => {
-    // const z = Object.entries(req.file).length
-    console.log(req.file)
-    // if(req.file==null||undefined) return
-    if (req.file != null || undefined) {
-        if ((req.file).fieldname == 'foodImage') {
-            req.body.foodImage = `http://192.168.0.112:8612/uploads${(req.file).filename}`
-        }
+    try{
+        console.log("273",req.body)
+        restarauntSchema.addAvaliableFood.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, data) => {
+            if (err) { res.status(400).send({ message: 'invalid restarauntid' }) }
+            else {
+                console.log(data)
+                res.status(200).send({ message: data, statusCode: 200 })
+            }
+        })
+    }catch(err){
+        res.status(500).send({message:err.message})
     }
+}
+    // const z = Object.entries(req.file).length
+    // console.log(req.file)
+    // if(req.file==null||undefined) return
+    // if (req.file != null || undefined) {
+    //     if ((req.file).fieldname == 'foodImage') {
+    //         // req.body.foodImage = `http://192.168.0.112:8612/uploads${(req.file).filename}`
+    //         req.body.foodImage = `http://192.168.0.112:8612/uploads/${req.file.filename}`
+    //     }
+    // }
     // const z=Object.entries(req.file).filter((result)=>{console.log('z',result)})
     // console.log(z)
-    restarauntSchema.addAvaliableFood.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, data) => {
-        if (err) { res.status(400).send({ message: 'invalid restarauntid' }) }
-        else {
-            console.log(data)
-            res.status(200).send({ message: data, statusCode: 200 })
-        }
-    })
-}
+    
+
 
 const deleteFoodItems = (req, res) => {
     restarauntSchema.addAvaliableFood.findByIdAndUpdate(req.params.id, { deleteFlag: "true" }, { new: true }, (err, data) => {

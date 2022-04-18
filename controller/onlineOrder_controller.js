@@ -5,15 +5,15 @@ const deliveryControll=require('../model/delivery_schema')
 
 const onlineOrderDetails=(req,res)=>{
     try{
-            onlineOrderControll.onlineOrderDetails.create(req.body, (err, data) => {
-                console.log("line 9",data)
-                if (err) throw err
-                res.status(200).send({ message: data})
-            
-    })
-}catch(err){
-    res.status(500).send({message:err.message})
-}
+        onlineOrderControll.onlineOrderDetails.create(req.body, (err, data) => {
+          console.log("line 9",data)
+            if (err) throw err
+           res.status(200).send({ message: data})
+        })
+    }
+    catch(err){
+        res.status(500).send({message:err.message})
+    }
     
 }
 const getAllOnlineOrderDetails=(req,res)=>{
@@ -40,14 +40,14 @@ const getSingleOnlineOrderDetails=(req,res)=>{
 const adminUpdateOnlineOrderDetails=(req,res)=>{
     //  var deliveryDetails={}
 try{
-    deliveryControll.deliveryRegister.findOne({_id:req.params.deliveryCandidateId,deleteFlag:"false"},{name:1,contact:1},(err,data)=>{
+    deliveryControll.deliveryRegister.findOne({_id:req.query.deliveryCandidateId,deleteFlag:"false"},{name:1,contact:1},(err,data)=>{
         console.log("line 18",data)
         if(data){
             req.body.deliveryCandidateName=data.name,
             req.body.candidateContactNumber=data.contact
             req.body.orderStatus="orderAccepted"
             console.log("line 23",req.body)
-            onlineOrderControll.onlineOrderDetails.findOneAndUpdate({_id:req.params.orderId,deleteFlag:"false"},req.body,{new:true},(err,datas)=>{
+            onlineOrderControll.onlineOrderDetails.findOneAndUpdate({_id:req.query.orderId,deleteFlag:"false"},req.body,{new:true},(err,datas)=>{
                 if(err)throw err
                 console.log("line 26",datas)
                 res.status(200).send({message:"update order details",datas})
@@ -62,7 +62,10 @@ try{
 }
 const deliveryCandidateUpdateOnlineOrderStatusDetails=(req,res)=>{
     try{
-    deliveryControll.deliveryRegister.findOne({_id:req.params.deliveryCandidateId,deleteFlag:"false"},(err,data)=>{
+    console.log(req.params.deliveryCandidateId)
+    console.log(req.query.deliveryCandidateId)
+  
+    deliveryControll.deliveryRegister.findOne({_id:req.query.deliveryCandidateId,deleteFlag:"false"},(err,data)=>{
         console.log("line 36",data)
         if(data){
             var Location={}
@@ -74,7 +77,9 @@ const deliveryCandidateUpdateOnlineOrderStatusDetails=(req,res)=>{
            req.body.deliveryLocation=Location
            req.body.orderStatus="orderTakeOver"
            console.log("line 40",req.body)
-           onlineOrderControll.onlineOrderDetails.findOneAndUpdate({_id:req.params.orderId,deleteFlag:"false"},req.body,{new:true},(err,datas)=>{
+           console.log(req.params.orderId)
+    
+           onlineOrderControll.onlineOrderDetails.findOneAndUpdate({_id:req.query.orderId,deleteFlag:"false"},req.body,{new:true},(err,datas)=>{
                if(err)throw err
                console.log("line 43",datas)
                res.status(200).send({message:"update order details",datas})
@@ -90,13 +95,16 @@ const deliveryCandidateUpdateOnlineOrderStatusDetails=(req,res)=>{
 
 const getAllOnlineOrderAcceptedDetails=(req,res)=>{
     try{
-    onlineOrderControll.onlineOrderDetails.find({orderStatus:"orderAccepted",deleteFlag:'false'},(err,data)=>{
-        if(err)throw err
-        res.status(200).send(data)
-    })
-}catch(err){
-    res.status(400).send({message:err.message})
-}
+        // onlineOrderControll.onlineOrderDetails.find({},(err,data)=>{
+        //     console.log(data)
+        // })
+        onlineOrderControll.onlineOrderDetails.find({},(err,data)=>{
+            if(err)throw err
+            res.status(200).send(data)
+        })
+    }catch(err){
+        res.status(400).send({message:err.message})
+    }
 }
 
 const deliveryCandidateUpdateOnlineOrderDetails=(req,res)=>{

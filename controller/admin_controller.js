@@ -12,7 +12,7 @@ const register = async (req, res) => {
             res.status(400).send({ message: errors.array() })
         }else {
             adminSchema.countDocuments({ email: req.body.email }, async (err, data) => {
-                if (data == 0) {
+                if (data == 0){
                     const confirmPassword=req.body.confirmPassword
                    if(req.body.password==confirmPassword){
                     req.body.password = await bcrypt.hash(req.body.password, 10)
@@ -45,13 +45,13 @@ const login = async(req, res) => {
             console.log('line 44',req.body.password)
             adminSchema.findOne({ email: req.body.email}, async (err, data) => {
                 if(data){
-                    const verifyPassword = await bcrypt.compare(req.body.password, data.password)
+                    const verifyPassword = await bcrypt.compare(req.body.password,data.password)
                     if (verifyPassword == true) {
                         const token = jwt.sign({ userid: data._id }, 'secret')
                         console.log("line 59",data)
                         res.status(200).send({ message: data, token })
                     } else {
-                        res.status(400).send({ message: 'invalid password' })
+                        res.status(400).send({ message:'invalid password' })
                     }
                 }
                 else{
@@ -73,7 +73,7 @@ const login = async(req, res) => {
                                 console.log("line 72", datas)
                                 if(err){throw err}
                                 if (datas) {
-                                    console.log("line 75", datas)
+                                console.log("line 75", datas)
                         const response = await fast2sms.sendMessage({ authorization: process.env.OTPKEY,message:otp,numbers:[req.body.contact]})
                         console.log("line 77",response,otp)
                        // const token = await jwt.sign({ userid: data._id }, 'secret')
@@ -100,20 +100,20 @@ const login = async(req, res) => {
                     if(data!=null){
                         adminSchema.findOne({contact:req.body.contact},async(err,datas)=>{
                             console.log("line 99",datas)
-                if(err){throw err}
-                else{
-                    const token=await jwt.sign({userId:datas._id},'SECRET')
-                    res.status(200).send({datas:datas,token})
-                }
+                            if(err){throw err}
+                            else{
+                                const token=await jwt.sign({userid:datas._id},'SECRET')
+                                res.status(200).send({datas:datas,token})
+                                }
                         })
                     }else{
                         res.status(400).send({message:"otp expired"})
                     }
-                })        
+            })        
         }
     }
-        
-    } catch (err) {
+    } 
+    catch (err) {
         console.log(err.message)
         res.status(500).send({ message: 'please check it again' })
     }
